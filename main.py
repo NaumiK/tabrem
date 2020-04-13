@@ -16,7 +16,7 @@ login_manager.init_app(app)
 
 
 class FormRegistration(FlaskForm):
-    email = StringField("Email", validators=[DataRequired()])
+    id_name = StringField("ID name", validators=[DataRequired()])
     password = PasswordField("Пароль", validators=[DataRequired()])
     password_again = PasswordField("Повторите пароль", validators=[DataRequired()])
     username = StringField("Имя пользователя", validators=[DataRequired()])
@@ -44,23 +44,22 @@ def registration():
     form = FormRegistration()
     if form.validate_on_submit():
         session = db_session.create_session()
-        in_base = session.query(User).filter(form.identification_name.data == User.user_identification_name).first()
+        in_base = session.query(User).filter(form.id_name.data == User.id_name).first()
         if in_base:
-            return render_template("registration.html", message="Идентификационное имя уже присутсвует в базе",
+            return render_template("register.html", message="Идентификационное имя уже присутсвует в базе",
                                    form=form)
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
-        current_user = User(
-            username=form.username.data,
-            email=form.email.data,
-        )
+        current_user = User()
+        current_user.id_name = form.id_name.data
+        current_user.username = form.username.data
         current_user.set_password(form.password.data)
         session.add(current_user)
         session.commit()
         return redirect("/")
-    return render_template('registration.html', title='Регистрация', form=form, _in_=False, name="")
+    return render_template('register.html', title='Регистрация', form=form, _in_=False, name="")
 
 
 if __name__ == '__main__':

@@ -8,46 +8,44 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <div>
-            {{ form.identification_name.label }} <br>
-            {{ form.identification_name(class="form-control") }} <br>
-            {{ for error in form.identification_name.errors }}
+            {{ form.id_name.label }} <br>
+            {{ form.id_name(class="form-control") }} <br>
+            {% for error in form.id_name.errors %}
                 <div class="alert alert-danger" role="alert">
                     {{ error }}
                 </div>
-            {{ endfor}}
+            {% endfor %}
         </div>
         <div>
             {{ form.password.label }} <br>
             {{ form.password(class="form-control", type="password") }} <br>
-            {{ for error in form.password.errors }}
+            {% for error in form.password.errors %}
                 <div class="alert alert-danger" role="alert">
                     {{ error }}
                 </div>
-            {{ endfor}}
+            {% endfor %}
         </div>
         <div>
             {{ form.password_again.label }} <br>
             {{ form.password_again(class="form-control", type="password") }} <br>
-            {{ for error in form.password_again.errors }}
+            {% for error in form.password_again.errors %}
                 <div class="alert alert-danger" role="alert">
                     {{ error }}
                 </div>
-            {{ endfor}}
+            {% endfor %}
         </div>
         <div>
             {{ form.username.label }} <br>
             {{ form.username(class="form-control") }} <br>
-            {{ for error in form.username.errors }}
+            {% for error in form.username.errors %}
                 <div class="alert alert-danger" role="alert">
                     {{ error }}
                 </div>
-            {{ endfor}}
+            {% endfor %}
         </div>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-        <div class="alert alert-warning">{{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+        {% if message %}
+            <div class="alert alert-warning">{{ message }} </div>
+        {% endif %}
     </form>
 {% endblock %}
