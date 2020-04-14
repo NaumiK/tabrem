@@ -21,7 +21,7 @@ class FormRegistration(FlaskForm):
     submit = SubmitField("Зарегистрироватьтся")
 
 
-@blueprint.route("/register", methods=["GET", "POST"])
+@register.route("/register", methods=["GET", "POST"])
 def registration():
     form = FormRegistration()
     if form.validate_on_submit():
