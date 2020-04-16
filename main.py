@@ -3,7 +3,8 @@ from flask_restful import Api
 from flask_login import LoginManager
 from data import db_session
 from data.user import User
-import register
+from reg_login import register
+from api import reg_login
 
 app = Flask(__name__)
 api = Api(app)
@@ -24,12 +25,13 @@ def load_user(user_id):
 def main():
     params = {"title": "TabRem",
               "_in_": False,
-              "name": "Daniil"}
+              "name": "something"}
     return render_template("table_page.html", **params)
 
 
 if __name__ == '__main__':
     db_session.global_init("db/tablets.sqlite")
     app.register_blueprint(register.register)
-    app.run()
+    api.add_resource(reg_login.Register, '/api/register')
+    app.run("127.0.0.1", port=8080)
 
