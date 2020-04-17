@@ -19,8 +19,7 @@ class Register(Resource):
         args = parser.parse_args()
         session = db_session.create_session()
         if session.query(User).filter(User.id_name == args["idname"]).first():
-            abort(305, message=f"User {args['idname']} is already registered")
-            return
+            abort(404, message=f"User {args['idname']} is already registered")
         current_user = User()
         current_user.id_name = args["idname"]
         current_user.username = args["username"]

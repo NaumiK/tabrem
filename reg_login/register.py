@@ -42,5 +42,10 @@ def registration():
             'password': form.password.data,
             'username': form.username.data
         }
-        print(post('http://localhost:8080/api/register', json=params).json())
+        response = post('http://localhost:8080/api/register', json=params).json()
+
+        if form.password.data != form.password_again.data:
+            return render_template("register.html", message="Passwords must be the same", form=form)
+        elif not response.get('success', False):
+            return render_template("register.html", message=response.get('message', 'Error'), form=form)
     return render_template('register.html', title='Регистрация', form=form)

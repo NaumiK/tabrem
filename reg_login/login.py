@@ -12,6 +12,5 @@ login = Blueprint("login", __name__,
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        session = db_session.create_session()
+        pass
 
-        session.close()
