@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_login import LoginManager
 from data import db_session
 from data.user import User
-from reg_login import register
+from reg_login import register, login
 from api import reg_login
 
 app = Flask(__name__)
@@ -32,6 +32,7 @@ def main():
 if __name__ == '__main__':
     db_session.global_init("db/tablets.sqlite")
     app.register_blueprint(register.register)
-    api.add_resource(reg_login.Register, '/api/register')
+    app.register_blueprint(login.login)
+    api.add_resource(reg_login.UserAcc, '/api/useracc')
     app.run("127.0.0.1", port=8080)
 

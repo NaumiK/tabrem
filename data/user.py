@@ -19,3 +19,6 @@ class User(SqlAlchemyBase, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def __str__(self):
+        return f"{self.id}, {self.username}, {self.password}, {self.id_name}, {self.created_date}"
