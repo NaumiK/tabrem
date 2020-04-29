@@ -18,18 +18,18 @@
     <nav class="navbar navbar-dark" style="background-color: #629fbc; position: fixed; width:100%">
     <div class="in_bar">
         <a class="navbar-brand" href="/">
-            <img src="{{url_for('static', filename='img/modeling.png')}}"
+            <img src="{{ url_for('static', filename='img/modeling.png') }}"
                 class="d-inline-block align-top"
                 width="30" height="30" alt="">
             TabRem
         </a>
             {% for element in ["Tablets", "People"] %}
-            <a class="links_in_bar nav-link" href="/{{element.lower()}}">{{element}}</a>
+            <a class="links_in_bar nav-link" href="/{{ element.lower() }}">{{ element }}</a>
             {% endfor %}
     </div>
     <div class="in_bar">
         {% if current_user.is_authenticated %}
-        <a class="nav-link personal">{{ current_user.username }}</a>
+        <a class="nav-link personal" href="/client_page">{{ current_user.username }}</a>
         {% else %}
             <a class="btn btn-dark" href="register">Зарегистрироваться</a>
             <a class="btn btn-light" href="login">Войти</a>

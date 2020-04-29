@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect
 from data.user import User
-from reg_login.forms import RegisterForm
+from pages.forms import RegisterForm
 from requests import post
-from flask_login import login_user
+from flask_login import login_user, current_user
 
 register = Blueprint("register", __name__,
                      template_folder="templates")
@@ -10,6 +10,8 @@ register = Blueprint("register", __name__,
 
 @register.route("/register", methods=["GET", "POST"])
 def registration():
+    if current_user.is_authenticated:
+        return redirect("/client_page")
     form = RegisterForm()
     if form.validate_on_submit():
         params = {
@@ -23,11 +25,11 @@ def registration():
             return render_template("register.html", message="Passwords must be the same", form=form)
         elif not response.get('success', False):
             return render_template("register.html", message=response.get('message', 'Error'), form=form)
-        current_user = User()
-        current_user.id_name = response["id_name"]
-        current_user.username = response["username"]
-        current_user.id = response["id"]
-        print(current_user)
-        login_user(current_user, remember=True)
-        return redirect("/")
+        _user = User()
+        _user.id_name = response["id_name"]
+        _user.username = response["username"]
+        _user.id = response["id"]
+        print(_user)
+        login_user(_user, remember=True)
+        return redirect("/client_page")
     return render_template('register.html', title='Регистрация', form=form)

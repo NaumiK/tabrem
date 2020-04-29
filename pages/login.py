@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template
 from .forms import LoginForm
 from data.user import User
 from requests import get
-from flask_login import login_user
+from flask_login import login_user, current_user
 
 login = Blueprint("login", __name__,
                   template_folder="templates")
@@ -10,6 +10,8 @@ login = Blueprint("login", __name__,
 
 @login.route("/login", methods=["GET", "POST"])
 def login_func():
+    if current_user.is_authenticated:
+        return redirect("/client_page")
     form = LoginForm()
     if form.validate_on_submit():
         params = {
@@ -19,11 +21,11 @@ def login_func():
         response = get("http://localhost:8080/api/useracc", json=params).json()
         if not response.get("success", False):
             return render_template("login.html", title="Вход", form=form, message=response.get("message", "Error"))
-        current_user = User()
-        current_user.id_name = response["id_name"]
-        current_user.id = response["id"]
-        current_user.username = response["username"]
-        current_user.created_date = response["created_date"]
-        login_user(current_user, remember=form.remember_me.data)
-        return redirect("/")
+        _user = User()
+        _user.id_name = response["id_name"]
+        _user.id = response["id"]
+        _user.username = response["username"]
+        _user.created_date = response["created_date"]
+        login_user(_user, remember=form.remember_me.data)
+        return redirect("/client_page")
     return render_template("login.html", title="Вход", form=form)
