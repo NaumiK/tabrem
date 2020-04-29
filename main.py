@@ -35,5 +35,5 @@ if __name__ == '__main__':
     app.register_blueprint(login.login)
     app.register_blueprint(client_page.client_page)
     api.add_resource(reg_login.UserAcc, '/api/useracc')
-    api.add_resource(tables.Test, '/api/tables')
+    api.add_resource(tables.GroupOfTables, '/api/tables')
     app.run("127.0.0.1", port=8080)
