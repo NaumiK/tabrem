@@ -14,6 +14,7 @@ class User(SqlAlchemyBase, UserMixin):
     id_name = sqlalchemy.Column(sqlalchemy.String, nullable=True, unique=True, index=True)
     user_token = sqlalchemy.Column(sqlalchemy.String, nullable=True, unique=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True, default=datetime.datetime.now)
+    table_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
