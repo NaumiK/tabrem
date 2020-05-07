@@ -19,7 +19,7 @@ def login_func():
             "password": form.password.data
         }
         response = get("http://localhost:8080/api/useracc", json=params).json()
-        if not response.get("success", False):
+        if response["message"] != "success":
             return render_template("login.html", title="Вход", form=form, message=response.get("message", "Error"))
         _user = User()
         _user.id_name = response["id_name"]

@@ -20,16 +20,14 @@ def registration():
             'username': form.username.data
         }
         response = post('http://localhost:8080/api/useracc', json=params).json()
-        print(response)
         if form.password.data != form.password_again.data:
             return render_template("register.html", message="Passwords must be the same", form=form)
-        elif not response.get('success', False):
+        elif response["message"] != "success":
             return render_template("register.html", message=response.get('message', 'Error'), form=form)
         _user = User()
         _user.id_name = response["id_name"]
         _user.username = response["username"]
         _user.id = response["id"]
-        print(_user)
         login_user(_user, remember=True)
         return redirect("/client_page")
     return render_template('register.html', title='Регистрация', form=form)
