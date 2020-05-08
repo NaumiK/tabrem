@@ -5,7 +5,7 @@ import sqlalchemy.ext.declarative as dec
 import logging
 
 SqlAlchemyBase = dec.declarative_base()
-logging.basicConfig(level="INFO")
+logging.basicConfig(level="INFO", filename="base.log")
 
 __factory = None
 
