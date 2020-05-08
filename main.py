@@ -38,4 +38,4 @@ if __name__ == '__main__':
     api.add_resource(board.Table, '/api/<string:id_name>/board')
     api.add_resource(status.Status, '/api/<string:id_name>/board/<string:board_id>')
     api.add_resource(task.Task, '/api/<string:id_name>/board/<string:board_id>/<string:status_id>')
-    app.run("127.0.0.1", port=8080)
+    app.run()
