@@ -75,9 +75,11 @@ class Board(Resource):
         # endregion
 
         session = db_session.create_session()
+        # one element
         if args["id"]:
             check_author(id_name, args["id"], BoardModel)
             boards = session.query(BoardModel).filter(BoardModel.id == args["id"]).all()
+        # group of elements
         else:
             boards = session.query(BoardModel).filter(BoardModel.author_id == id_name).all()
             if not boards:

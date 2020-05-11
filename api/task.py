@@ -78,10 +78,12 @@ class Task(Resource):
         # endregion
 
         session = db_session.create_session()
+        # one element
         if args["id"]:
             check_author(id_name, args["id"], TaskModel)
             current_task = session.query(TaskModel).filter(args["id"] == TaskModel.id).first()
             session.delete(current_task)
+        # group of elements
         else:
             for task in session.query(TaskModel).filter(status_id == TaskModel.id, TaskModel.author_id == id_name):
                 session.delete(task)

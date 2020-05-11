@@ -93,6 +93,7 @@ class Status(Resource):
         # endregion
 
         session = db_session.create_session()
+        # one element
         if args["id"]:
             check_author(id_name, args["id"], StatusModel)
             status_for_delete = session.query(StatusModel).filter(StatusModel.id == args["id"]).first()
@@ -102,6 +103,7 @@ class Status(Resource):
             for i in session.query(TaskModel).filter(TaskModel.status_id == status_for_delete.id).all():
                 session.delete(i)
             session.delete(status_for_delete)
+        # group of elements
         else:
             statuses_for_delete = session.query(StatusModel).filter(StatusModel.author_id == id_name,
                                                                     StatusModel.board_id == board_id).all()
