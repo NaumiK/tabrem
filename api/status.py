@@ -6,7 +6,7 @@ from api.reqparse import status_parser
 from flask import jsonify
 from api.token import abort_if_token_is_not_correct
 from data.task import TaskModel
-from api.user import check_author
+from api.user import check_author, check_password_for_args
 
 
 def abort_if_table_not_found(board_id):
@@ -20,9 +20,10 @@ class Status(Resource):
         # region work with args
         abort_if_table_not_found(board_id)
         args = status_parser.parse_args()
+        abort_if_token_is_not_correct(id_name, args["user_token"])
+        check_password_for_args(id_name, args["password"])
         if not args["order"]:
             return abort(404, message="You missed order argument")
-        abort_if_token_is_not_correct(id_name, args["user_token"])
         if int(args["order"]) <= 0:
             return abort(404, message="Order should be larger than zero")
         # endregion
@@ -52,6 +53,7 @@ class Status(Resource):
         abort_if_table_not_found(board_id)
         args = status_parser.parse_args()
         abort_if_token_is_not_correct(id_name, args["user_token"])
+        check_password_for_args(id_name, args["password"])
         # endregion
 
         session = db_session.create_session()
@@ -87,17 +89,26 @@ class Status(Resource):
         abort_if_table_not_found(board_id)
         args = status_parser.parse_args()
         abort_if_token_is_not_correct(id_name, args["user_token"])
+        check_password_for_args(id_name, args["password"])
         # endregion
 
         session = db_session.create_session()
-        status_for_delete = session.query(StatusModel).filter(StatusModel.id == args["id"]).first()
-        for i in session.query(StatusModel).filter(StatusModel.board_id == status_for_delete.board_id,
-                                                   StatusModel.order > status_for_delete.order).all():
-            i.order -= 1
-        check_author(id_name, status_for_delete.id, StatusModel)
-        for i in session.query(TaskModel).filter(TaskModel.status_id == status_for_delete.id).all():
-            session.delete(i)
-        session.delete(status_for_delete)
+        if args["id"]:
+            check_author(id_name, args["id"], StatusModel)
+            status_for_delete = session.query(StatusModel).filter(StatusModel.id == args["id"]).first()
+            for i in session.query(StatusModel).filter(StatusModel.board_id == status_for_delete.board_id,
+                                                       StatusModel.order > status_for_delete.order).all():
+                i.order -= 1
+            for i in session.query(TaskModel).filter(TaskModel.status_id == status_for_delete.id).all():
+                session.delete(i)
+            session.delete(status_for_delete)
+        else:
+            statuses_for_delete = session.query(StatusModel).filter(StatusModel.author_id == id_name,
+                                                                    StatusModel.board_id == board_id).all()
+            for sfd in statuses_for_delete:
+                for i in session.query(TaskModel).filter(TaskModel.status_id == sfd.id).all():
+                    session.delete(i)
+                session.delete(sfd)
         session.commit()
 
         response = {
@@ -109,9 +120,10 @@ class Status(Resource):
         # region work with args
         abort_if_table_not_found(board_id)
         args = status_parser.parse_args()
+        abort_if_token_is_not_correct(id_name, args["user_token"])
+        check_password_for_args(id_name, args["password"])
         if not args["id"]:
             return abort(404, message="You missed id argument")
-        abort_if_token_is_not_correct(id_name, args["user_token"])
         # endregion
 
         check_author(id_name, args["id"], StatusModel)

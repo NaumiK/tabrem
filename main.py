@@ -35,6 +35,7 @@ if __name__ == '__main__':
     app.register_blueprint(login.login)
     app.register_blueprint(client_page.client_page)
     api.add_resource(user.UserAcc, '/api/useracc')
-    api.add_resource(board.Table, '/api/<string:id_name>/board')
+    api.add_resource(board.Board, '/api/<string:id_name>/board')
     api.add_resource(status.Status, '/api/<string:id_name>/board/<string:board_id>')
     api.add_resource(task.Task, '/api/<string:id_name>/board/<string:board_id>/<string:status_id>')
+    app.run("127.0.0.1", port=8080)

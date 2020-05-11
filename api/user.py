@@ -26,6 +26,12 @@ def check_author(id_name, object_id, model):
         return abort(404, message="Not found")
 
 
+def check_password_for_args(id_name, password):
+    session = db_session.create_session()
+    current_user = session.query(User).filter(User.id_name == id_name).first()
+    current_user.check_password(password)
+
+
 class UserAcc(Resource):
     def post(self):
         # region work with args
@@ -62,8 +68,7 @@ class UserAcc(Resource):
 
         session = db_session.create_session()
         current_user = session.query(User).filter(User.id_name == args["id_name"]).first()
-        if not current_user.check_password(args["password"]):
-            abort(404, message="The password isn't correct")
+        current_user.check_password(args["password"])
 
         response = {"message": "success",
                     "id": current_user.id,
