@@ -1,5 +1,6 @@
 import sqlalchemy
 from sqlalchemy import orm
+from flask_restful import abort
 import datetime
 from .db_session import SqlAlchemyBase
 from flask_login import UserMixin
@@ -21,7 +22,8 @@ class User(SqlAlchemyBase, UserMixin):
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        if not check_password_hash(self.password, password):
+            return abort(404, message="Password isn't correct")
 
     def __str__(self):
         return f"{self.id}, {self.username}, {self.password}, {self.id_name}, {self.created_date}"

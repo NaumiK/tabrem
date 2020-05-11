@@ -5,7 +5,7 @@ from api.token import abort_if_token_is_not_correct
 from data.task import TaskModel
 from api.status import StatusModel
 from flask import jsonify
-from api.user import check_author
+from api.user import check_author, check_password_for_args
 
 
 def abort_if_status_not_found(board_id):
@@ -19,6 +19,7 @@ class Task(Resource):
         # region work with args
         args = task_parser.parse_args()
         abort_if_token_is_not_correct(id_name, args["user_token"])
+        check_password_for_args(id_name, args["password"])
         # endregion
 
         session = db_session.create_session()
@@ -40,6 +41,7 @@ class Task(Resource):
         # region work with args
         args = task_parser.parse_args()
         abort_if_token_is_not_correct(id_name, args["user_token"])
+        check_password_for_args(id_name, args["password"])
         # endregion
 
         session = db_session.create_session()
@@ -72,14 +74,19 @@ class Task(Resource):
         # region work with args
         args = task_parser.parse_args()
         abort_if_token_is_not_correct(id_name, args["user_token"])
-        if not args["id"]:
-            return abort(404, message="You missed id argument")
+        check_password_for_args(id_name, args["password"])
         # endregion
 
-        check_author(id_name, args["id"], TaskModel)
         session = db_session.create_session()
-        current_task = session.query(TaskModel).filter(args["id"] == TaskModel.id).first()
-        session.delete(current_task)
+        # one element
+        if args["id"]:
+            check_author(id_name, args["id"], TaskModel)
+            current_task = session.query(TaskModel).filter(args["id"] == TaskModel.id).first()
+            session.delete(current_task)
+        # group of elements
+        else:
+            for task in session.query(TaskModel).filter(status_id == TaskModel.id, TaskModel.author_id == id_name):
+                session.delete(task)
         session.commit()
 
         response = {
@@ -91,6 +98,7 @@ class Task(Resource):
         # region work with args
         args = task_parser.parse_args()
         abort_if_token_is_not_correct(id_name, args["user_token"])
+        check_password_for_args(id_name, args["password"])
         if not args["id"]:
             return abort(404, message="You missed id argument")
         # endregion
